@@ -1,1 +1,2 @@
+include(":crvAdapter")
 include(":template")

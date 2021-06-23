@@ -30,4 +30,9 @@ object Dependencies {
         const val material = "com.google.android.material:material:1.3.0"
     }
 
+    object RecyclerView {
+        const val chadAdapter = "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30"
+        const val recyclerView = "androidx.recyclerview:recyclerview:1.2.0"
+    }
+
 }
