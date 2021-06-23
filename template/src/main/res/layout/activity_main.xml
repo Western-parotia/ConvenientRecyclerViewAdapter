@@ -7,13 +7,13 @@
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSimple"
+        android:id="@+id/rvBook"
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="match_parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMulti"
+        android:id="@+id/rvWeather"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
