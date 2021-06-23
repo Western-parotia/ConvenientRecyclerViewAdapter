@@ -1,10 +1,13 @@
 import com.buildsrc.kts.AndroidConfig
 import com.buildsrc.kts.Dependencies
+import com.buildsrc.kts.Publish
 
 plugins {
     id("com.android.library")
     id("kotlin-android")
+    `maven-publish`
 }
+val versionTimestamp = Publish.Version.getVersionTimestamp()
 
 android {
     compileSdkVersion(AndroidConfig.compileSdkVersion)
@@ -29,6 +32,13 @@ android {
             )
         }
 
+    }
+    afterEvaluate {
+        buildTypes.forEach {
+            it.buildConfigField("Integer", "versionCode", Publish.Version.versionCode.toString())
+            it.buildConfigField("String", "versionName", "\"${Publish.Version.versionName}\"")
+            it.buildConfigField("String", "versionTimeStamp", "\"$versionTimestamp\"")
+        }
     }
     buildFeatures {
         viewBinding = true
@@ -56,4 +66,59 @@ dependencies {
     implementation(Dependencies.AndroidX.core_ktx)
     api(Dependencies.RecyclerView.chadAdapter)
     implementation(Dependencies.RecyclerView.recyclerView)
+}
+
+
+val sourceCodeTask: Jar = tasks.register("sourceCode", Jar::class.java) {
+    from(android.sourceSets.getByName("main").java.srcDirs)
+    classifier = "sources"
+}.get()
+
+
+tasks.register("createGitTagAndPush", Exec::class.java) {
+    commandLine("git", "push", "origin", versionTimestamp)
+}.get().dependsOn(tasks.register("createGitTag", Exec::class.java) {
+    commandLine("git", "tag", versionTimestamp, "-m", "autoCreateWithMavenPublish")
+})
+publishing {
+    val versionName = Publish.Version.versionName
+    val groupId = Publish.Maven.groupId
+    val artifactId = Publish.Maven.artifactId
+
+    publications {
+        create<MavenPublication>("crvAdapter") {
+            setGroupId(groupId)
+            setArtifactId(artifactId)
+            version = versionName
+            artifact(sourceCodeTask)
+            afterEvaluate {//在脚本读取完成后绑定
+                val bundleReleaseAarTask: Task = tasks.getByName("bundleReleaseAar")
+                bundleReleaseAarTask.finalizedBy("createGitTagAndPush")
+                artifact(bundleReleaseAarTask)
+            }
+//            artifact("$buildDir/outputs/aar/loading-release.aar")//直接指定文件
+            pom.withXml {
+                val dependenciesNode = asNode().appendNode("dependencies")
+                configurations.implementation.get().allDependencies.forEach {
+                    if (it.version != "unspecified" && it.name != "unspecified") {
+                        val depNode = dependenciesNode.appendNode("dependency")
+                        depNode.appendNode("groupId", it.group)
+                        depNode.appendNode("artifactId", it.name)
+                        depNode.appendNode("version", it.version)
+                    }
+                }
+            }
+
+        }
+        repositories {
+            maven {
+                setUrl(Publish.Maven.getCodingRepoUrl(project))
+                credentials {
+                    username = Publish.Maven.getCodingMavenUsername(project)
+                    password = Publish.Maven.getCodingMavenPassword(project)
+                }
+            }
+        }
+    }
+
 }
