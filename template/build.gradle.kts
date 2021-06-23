@@ -68,5 +68,5 @@ dependencies {
     implementation(Dependencies.Material.material)
     implementation(Dependencies.AndroidX.constraintlayout)
 //    implementation(project(":crvAdapter"))
-    implementation("com.foundation.widget:convenient-recycle-viewAdapter:1.0-SNAPSHOT")
+    implementation("com.foundation.widget:convenient-recycle-viewAdapter:1.0.0")
 }
