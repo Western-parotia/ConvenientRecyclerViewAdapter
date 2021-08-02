@@ -10,7 +10,7 @@ import java.util.*
  *create by zhusw on 5/6/21 16:43
  */
 
-private const val VERSION = "1.0.1"
+private const val VERSION = "1.0.2"
 private const val SNAPSHOT = false
 
 object Publish {
