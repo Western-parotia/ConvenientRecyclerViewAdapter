@@ -1,7 +1,7 @@
 package com.buildsrc.kts
 
-import org.gradle.api.Project
 import java.io.File
+import java.util.*
 
 
 /**
@@ -10,8 +10,8 @@ import java.io.File
  *create by zhusw on 5/6/21 16:43
  */
 
-private const val VERSION = "1.0.0"
-private const val SNAPSHOT = false
+private const val VERSION = "1.0.1"
+private const val SNAPSHOT = true
 
 object Publish {
     object Version {
@@ -36,29 +36,31 @@ object Publish {
     }
 
     object Maven {
-        private const val fileName = "local.properties"
         const val groupId = "com.foundation.widget"
         const val artifactId = "convenient-recyclerview-adapter"
+        val codingArtifactsGradleUsername: String
+        val codingArtifactsGradlePassword: String
+        val codingArtifactsRepoUrl: String
 
-        fun getCodingRepoUrl(project: Project): String {
-            val pFile = File("${project.rootDir}/$fileName")
-            val url = getProperties(pFile, "codingArtifactsRepoUrl")
-            "url $url".log("Maven===")
-            return url
-        }
-
-        fun getCodingMavenUsername(project: Project): String {
-            val pFile = File("${project.rootDir}/$fileName")
-            val userName = getProperties(pFile, "codingArtifactsGradleUsername")
-            "userName $userName".log("Maven===")
-            return userName
-        }
-
-        fun getCodingMavenPassword(project: Project): String {
-            val pFile = File("${project.rootDir}/$fileName")
-            val pw = getProperties(pFile, "codingArtifactsGradlePassword")
-            "pw $pw".log("Maven===")
-            return pw
+        init {
+            //读取local的腾讯云用户名和密码
+            val localProperties = Properties()
+            var lp = File("local.properties")
+            if (!lp.exists()) lp = File("../local.properties")//“/”win和mac都支持
+            if (!lp.exists()) throw RuntimeException("没有找到local.properties")
+            localProperties.load(lp.inputStream())
+            val name = localProperties.getProperty("codingArtifactsGradleUsername")
+            val password = localProperties.getProperty("codingArtifactsGradlePassword")
+            val url = localProperties.getProperty("codingArtifactsRepoUrl")
+            if (name == null || password == null || url == null) {
+                throw RuntimeException(
+                    "请在local.properties添加私有仓库的用户名（codingArtifactsGradleUsername）" +
+                            "、密码（codingArtifactsGradlePassword）、url（codingArtifactsRepoUrl）"
+                )
+            }
+            codingArtifactsGradleUsername = name
+            codingArtifactsGradlePassword = password
+            codingArtifactsRepoUrl = url
         }
     }
 
