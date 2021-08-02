@@ -2,9 +2,14 @@
 
 在BaseQuickAdapter的基础上，增加支持ViewBinding自动初始化。
 
+### 更新日志：
+
+* 2021-7-27：
+    * 优化库名称，优化语义
+
 ### 引用
 ```kotlin
-implementation("com.foundation.widget:convenient-recycle-viewAdapter:版本号")
+implementation("com.foundation.widget:convenient-recyclerview-adapter:版本号")
 ```
 
 ### 一、单类型支持ViewBinding

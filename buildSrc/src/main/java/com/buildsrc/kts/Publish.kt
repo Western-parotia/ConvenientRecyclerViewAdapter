@@ -38,7 +38,7 @@ object Publish {
     object Maven {
         private const val fileName = "local.properties"
         const val groupId = "com.foundation.widget"
-        const val artifactId = "convenient-recycle-viewAdapter"
+        const val artifactId = "convenient-recyclerview-adapter"
 
         fun getCodingRepoUrl(project: Project): String {
             val pFile = File("${project.rootDir}/$fileName")
