@@ -1,5 +1,6 @@
 package com.foundation.widget.crvadapter.viewbinding
 
+import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -32,4 +33,6 @@ class ViewBindingViewHolder<T : ViewBinding>(val viewBinding: T, view: View) :
         }
         return -1
     }
+
+    val context: Context get() = itemView.context
 }
