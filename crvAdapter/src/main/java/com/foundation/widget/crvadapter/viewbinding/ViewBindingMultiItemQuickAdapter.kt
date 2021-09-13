@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.MultiItemEntity
+import com.foundation.widget.binding.ViewBindingHelper
 import com.foundation.widget.crvadapter.databinding.CrvadapterEmptyViewBindingLayoutBinding
 
 /**
@@ -42,7 +43,7 @@ abstract class ViewBindingMultiItemQuickAdapter<T : MultiItemEntity>
         val clzType = bindingMap[viewType]!!
         val vb = ViewBindingHelper.getViewBindingInstanceByClass<ViewBinding>(
             clzType, LayoutInflater.from(parent.context), parent, false
-        )!!
+        )
         return MultiViewBindingViewHolder(vb, viewType)
     }
 

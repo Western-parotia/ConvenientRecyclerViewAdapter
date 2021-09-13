@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.foundation.widget.binding.ViewBindingHelper
 
 /**
  * 初始化 viewBinding
@@ -20,10 +21,7 @@ abstract class ViewBindingQuickAdapter<VB : ViewBinding, T>
         val vb = ViewBindingHelper.getViewBindingInstance<VB>(
             this, LayoutInflater.from(parent.context), parent, false
         )
-        val vbCheck = requireNotNull(vb, {
-            "ViewBindingQuickAdapter init ViewBinding failed,please check parameterizedType"
-        })
-        return ViewBindingViewHolder(vbCheck, vbCheck.root)
+        return ViewBindingViewHolder(vb, vb.root)
     }
 
     abstract override fun convert(holder: ViewBindingViewHolder<VB>, item: T)

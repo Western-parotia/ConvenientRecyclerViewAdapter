@@ -35,4 +35,8 @@ object Dependencies {
         const val recyclerView = "androidx.recyclerview:recyclerview:1.2.0"
     }
 
+    object Foundation {
+        const val viewBindingHelper = "com.foundation.widget:view-binding-helper:0.0.1-SNAPSHOT"
+    }
+
 }

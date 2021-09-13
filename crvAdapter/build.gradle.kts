@@ -66,6 +66,7 @@ dependencies {
     implementation(Dependencies.AndroidX.core_ktx)
     api(Dependencies.RecyclerView.chadAdapter)
     implementation(Dependencies.RecyclerView.recyclerView)
+    implementation(Dependencies.Foundation.viewBindingHelper)
 }
 
 
