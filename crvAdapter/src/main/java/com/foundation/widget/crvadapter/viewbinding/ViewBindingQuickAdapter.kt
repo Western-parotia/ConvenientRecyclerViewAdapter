@@ -21,7 +21,7 @@ abstract class ViewBindingQuickAdapter<VB : ViewBinding, T>
         val vb = ViewBindingHelper.getViewBindingInstance<VB>(
             this, LayoutInflater.from(parent.context), parent, false
         )
-        return ViewBindingViewHolder(vb, vb.root)
+        return ViewBindingViewHolder(vb)
     }
 
     abstract override fun convert(holder: ViewBindingViewHolder<VB>, item: T)
