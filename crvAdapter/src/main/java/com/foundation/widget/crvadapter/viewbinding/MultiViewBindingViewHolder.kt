@@ -1,7 +1,6 @@
 package com.foundation.widget.crvadapter.viewbinding
 
 import androidx.viewbinding.ViewBinding
-import com.chad.library.adapter.base.BaseViewHolder
 import com.chad.library.adapter.base.entity.MultiItemEntity
 
 /**
@@ -9,8 +8,8 @@ import com.chad.library.adapter.base.entity.MultiItemEntity
  * 支持multi 类型
  * create by zhusw on 6/23/21 10:37
  */
-class MultiViewBindingViewHolder(val viewBinding: ViewBinding, val type: Int) :
-    BaseViewHolder(viewBinding.root) {
+class MultiViewBindingViewHolder(viewBinding: ViewBinding, val type: Int) :
+    ViewBindingViewHolder<ViewBinding>(viewBinding) {
     /**
      * 强制转换类型
      */
