@@ -11,7 +11,7 @@ import java.util.*
  */
 
 private const val VERSION = "1.0.4"
-private const val SNAPSHOT = true
+private const val SNAPSHOT = false
 
 object Publish {
     object Version {
