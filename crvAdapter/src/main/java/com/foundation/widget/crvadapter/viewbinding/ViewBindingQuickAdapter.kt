@@ -24,5 +24,10 @@ abstract class ViewBindingQuickAdapter<VB : ViewBinding, T>
         return ViewBindingViewHolder(vb)
     }
 
-    abstract override fun convert(holder: ViewBindingViewHolder<VB>, item: T)
+    override fun convert(holder: ViewBindingViewHolder<VB>, item: T) {
+        convertVB(holder, holder.viewBinding, item)
+    }
+
+    protected open fun convertVB(holder: ViewBindingViewHolder<VB>, vb: VB, item: T) {
+    }
 }
