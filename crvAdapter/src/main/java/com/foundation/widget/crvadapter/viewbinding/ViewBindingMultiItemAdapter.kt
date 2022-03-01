@@ -1,5 +1,6 @@
 package com.foundation.widget.crvadapter.viewbinding
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.Keep
@@ -12,6 +13,7 @@ import com.foundation.widget.binding.ViewBindingHelper
  * @时间 2022/3/1 10:46
  * api很简单，就3个：[addMultipleItem]、[addMultipleItemBuild]、[addDefaultMultipleItem]
  */
+@SuppressLint("NotifyDataSetChanged")
 open class ViewBindingMultiItemAdapter<BEAN> :
     BaseQuickAdapter<BEAN, ViewBindingViewHolder<ViewBinding>>(0) {
 
@@ -58,6 +60,7 @@ open class ViewBindingMultiItemAdapter<BEAN> :
         item: BEAN,
         listener: OnMultipleListListener<VB, BEAN>
     ) {
+        @Suppress("UNCHECKED_CAST")
         listener.onBindListViewHolder(
             adapter = this,
             holder = (holder as ViewBindingViewHolder<VB>),
@@ -122,6 +125,9 @@ open class ViewBindingMultiItemAdapter<BEAN> :
             item: BEAN
         ) -> Unit)? = null
 
+        /**
+         * @param isThisTypeCallback 这个bean是否是当前类型，true：是，后续会走bind逻辑
+         */
         fun setIsThisTypeCallback(
             isThisTypeCallback: (
                 adapter: ViewBindingMultiItemAdapter<BEAN>,
@@ -133,6 +139,9 @@ open class ViewBindingMultiItemAdapter<BEAN> :
             return this
         }
 
+        /**
+         * bind逻辑
+         */
         fun setOnBindListViewHolderCallback(
             onBindListViewHolderCallback: (
                 adapter: ViewBindingMultiItemAdapter<BEAN>,
@@ -217,7 +226,8 @@ open class ViewBindingMultiItemAdapter<BEAN> :
     }
 
     /**
-     * build模式添加，更方便直观
+     * build模式添加，更方便和直观
+     * 调用[TypeBuilder.setIsThisTypeCallback]、[TypeBuilder.setOnBindListViewHolderCallback]、[TypeBuilder.build]三步即可
      */
     inline fun <reified VB : ViewBinding> addMultipleItemBuild(): TypeBuilder<VB> {
         return TypeBuilder(VB::class.java)
