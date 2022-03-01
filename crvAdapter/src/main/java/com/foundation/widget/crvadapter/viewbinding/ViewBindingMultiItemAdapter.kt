@@ -68,43 +68,6 @@ open class ViewBindingMultiItemAdapter<BEAN> :
         )
     }
 
-    /**
-     * 方便使用inline简化效果，请忽略
-     */
-    fun <VB : ViewBinding> defItem(
-        clazz: Class<VB>,
-        onBindListViewHolderCallback: (
-            adapter: ViewBindingMultiItemAdapter<BEAN>,
-            holder: ViewBindingViewHolder<VB>,
-            vb: VB,
-            item: BEAN
-        ) -> Unit
-    ) {
-        idInfoList.add(0, object : OnMultipleListListener<VB, BEAN>() {
-            override fun isThisType(
-                adapter: ViewBindingMultiItemAdapter<BEAN>,
-                listPosition: Int,
-                item: BEAN
-            ): Boolean {
-                return true
-            }
-
-            override fun getViewBindingClass(): Class<VB> {
-                return clazz
-            }
-
-            override fun onBindListViewHolder(
-                adapter: ViewBindingMultiItemAdapter<BEAN>,
-                holder: ViewBindingViewHolder<VB>,
-                vb: VB,
-                item: BEAN
-            ) {
-                onBindListViewHolderCallback.invoke(adapter, holder, vb, item)
-            }
-        })
-        notifyDataSetChanged()
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////////////
     // 类
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,6 +207,44 @@ open class ViewBindingMultiItemAdapter<BEAN> :
             item: BEAN
         ) -> Unit
     ) {
-        defItem(VB::class.java, onBindListViewHolderCallback)
+        addDefaultMultipleItem(VB::class.java, onBindListViewHolderCallback)
+    }
+
+    /**
+     * 添加兜底type（else）
+     * 建议使用inline简化效果的重载方法
+     */
+    fun <VB : ViewBinding> addDefaultMultipleItem(
+        clazz: Class<VB>,
+        onBindListViewHolderCallback: (
+            adapter: ViewBindingMultiItemAdapter<BEAN>,
+            holder: ViewBindingViewHolder<VB>,
+            vb: VB,
+            item: BEAN
+        ) -> Unit
+    ) {
+        idInfoList.add(0, object : OnMultipleListListener<VB, BEAN>() {
+            override fun isThisType(
+                adapter: ViewBindingMultiItemAdapter<BEAN>,
+                listPosition: Int,
+                item: BEAN
+            ): Boolean {
+                return true
+            }
+
+            override fun getViewBindingClass(): Class<VB> {
+                return clazz
+            }
+
+            override fun onBindListViewHolder(
+                adapter: ViewBindingMultiItemAdapter<BEAN>,
+                holder: ViewBindingViewHolder<VB>,
+                vb: VB,
+                item: BEAN
+            ) {
+                onBindListViewHolderCallback.invoke(adapter, holder, vb, item)
+            }
+        })
+        notifyDataSetChanged()
     }
 }
