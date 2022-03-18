@@ -3,10 +3,7 @@ package com.kst.template
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.foundation.widget.crvadapter.viewbinding.MultiViewBindingViewHolder
-import com.foundation.widget.crvadapter.viewbinding.ViewBindingMultiItemQuickAdapter
-import com.foundation.widget.crvadapter.viewbinding.ViewBindingQuickAdapter
-import com.foundation.widget.crvadapter.viewbinding.ViewBindingViewHolder
+import com.foundation.widget.crvadapter.viewbinding.*
 import com.kst.template.databinding.ActivityMainBinding
 import com.kst.template.databinding.ItemBookBinding
 import com.kst.template.databinding.ItemWeatherCloudyBinding
@@ -21,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(vb.root)
         setBookData()
         setWeathers()
-
+        setWeathers2()
     }
 
     private fun setBookData() {
@@ -54,6 +51,60 @@ class MainActivity : AppCompatActivity() {
                 WeatherBean("晴天")
             } else {
                 WeatherBean("阴天")
+            }
+            data.add(bean)
+        }
+        adapter.setNewData(data)
+    }
+
+    private fun setWeathers2() {
+        val adapter = ViewBindingMultiItemAdapter<WeatherBean>()
+        adapter.addDefaultMultipleItem<ItemWeatherCloudyBinding> { _, _, vb, _ ->
+            vb.tvName.text = "随便写的兜底"
+        }
+        adapter.addMultipleItem(object :
+            ViewBindingMultiItemAdapter.OnMultipleListListener<ItemWeatherSunnyBinding, WeatherBean>() {
+            override fun isThisType(
+                adapter: ViewBindingMultiItemAdapter<WeatherBean>,
+                listPosition: Int,
+                item: WeatherBean
+            ): Boolean {
+                return item.weather == "晴天"
+            }
+
+            override fun onBindListViewHolder(
+                adapter: ViewBindingMultiItemAdapter<WeatherBean>,
+                holder: ViewBindingViewHolder<ItemWeatherSunnyBinding>,
+                vb: ItemWeatherSunnyBinding,
+                item: WeatherBean
+            ) {
+                holder.viewBinding.tvName.text = "type:1 ${item.weather}"
+            }
+        })
+        adapter.addMultipleItemBuild<ItemWeatherCloudyBinding>()
+            .setIsThisTypeCallback { _, _, item ->
+                item.weather == "阴天"
+            }
+            .setOnBindListViewHolderCallback { _, _, vb, item ->
+                vb.tvName.text = "type:2 ${item.weather}"
+            }
+            .build()
+        vb.rvWeather2.let {
+            it.layoutManager = LinearLayoutManager(this)
+            it.adapter = adapter
+        }
+        val data = mutableListOf<WeatherBean>()
+        for (i in 0..20) {
+            val bean = when (i % 3) {
+                0 -> {
+                    WeatherBean("晴天")
+                }
+                1 -> {
+                    WeatherBean("阴天")
+                }
+                else -> {
+                    WeatherBean("没有乱写的")
+                }
             }
             data.add(bean)
         }

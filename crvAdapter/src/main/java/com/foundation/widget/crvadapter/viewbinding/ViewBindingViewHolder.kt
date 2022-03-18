@@ -26,6 +26,7 @@ open class ViewBindingViewHolder<T : ViewBinding>(val viewBinding: T) :
     /**
      * 获取list的真正position
      */
+    @JvmOverloads
     fun getListPosition(adapter: RecyclerView.Adapter<*>? = bindingAdapter): Int {
         if (adapter is BaseQuickAdapter<*, *>) {
             return adapterLayoutPosition - adapter.headerLayoutCount
