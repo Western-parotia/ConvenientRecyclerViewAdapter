@@ -36,7 +36,7 @@ object Dependencies {
     }
 
     object Foundation {
-        const val viewBindingHelper = "com.foundation.widget:view-binding-helper:1.0.0"
+        const val viewBindingHelper = "com.foundation.widget:view-binding-helper:1.0.4"
     }
 
 }

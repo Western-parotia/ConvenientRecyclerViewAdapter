@@ -24,7 +24,7 @@ open class ViewBindingMultiItemAdapter<BEAN> :
 
     override fun getDefItemViewType(listPosition: Int): Int {
         idInfoList.forEachReverseSequence { index, listener ->
-            if (listener.isThisType(this, listPosition, data[listPosition])) {
+            if (listener.isThisType(this, listPosition, getItem(listPosition)!!)) {
                 return index
             }
         }
