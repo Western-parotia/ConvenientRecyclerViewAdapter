@@ -12,24 +12,24 @@ import com.foundation.widget.binding.ViewBindingHelper
  * 暂未实现展开折叠（后续需要再添加）
  * 暂不支持header、footer、empty等功能（后续需要再添加）
  */
-abstract class ViewBindingExpandableAdapter<T, VB1 : ViewBinding, VB2 : ViewBinding> :
+abstract class ViewBindingExpandableAdapter<VB1 : ViewBinding, VB2 : ViewBinding, T> :
     ViewBindingMultiItemAdapter<T>() {
     private val listRange get() = 0 until data.size
 
     init {
-        TypeBuilder(getViewBindingClassFromIndex<VB1>(1))
+        TypeBuilder(getViewBindingClassFromIndex<VB1>(0))
             .setIsThisTypeCallback { _, listPosition, _ ->
                 val info = getPositionInfo(listPosition)
-                return@setIsThisTypeCallback listPosition == info.itemStartPosition
+                return@setIsThisTypeCallback info.childPosition < 0
             }
             .setOnBindListViewHolderCallback { _, holder, _, item ->
                 convertParent(holder, item)
             }
             .build()
-        addDefaultMultipleItem(getViewBindingClassFromIndex<VB2>(2)) { _, holder, _, item ->
+        addDefaultMultipleItem(getViewBindingClassFromIndex<VB2>(1)) { _, holder, _, item ->
             val listPosition = holder.getListPosition()
             val info = getPositionInfo(listPosition)
-            convertChild(holder, item, listPosition - info.itemStartPosition)
+            convertChild(holder, item, info.childPosition)
         }
     }
 
@@ -66,8 +66,7 @@ abstract class ViewBindingExpandableAdapter<T, VB1 : ViewBinding, VB2 : ViewBind
             if (nextStartPosition > listPosition) {
                 return ExpandablePositionInfo(
                     parentPosition,
-                    listPosition - itemStartPosition,
-                    itemStartPosition
+                    listPosition - (itemStartPosition + 1),
                 )
             } else {
                 itemStartPosition = nextStartPosition
@@ -84,6 +83,5 @@ abstract class ViewBindingExpandableAdapter<T, VB1 : ViewBinding, VB2 : ViewBind
     class ExpandablePositionInfo(
         val parentPosition: Int,
         val childPosition: Int,
-        internal val itemStartPosition: Int
     )
 }
