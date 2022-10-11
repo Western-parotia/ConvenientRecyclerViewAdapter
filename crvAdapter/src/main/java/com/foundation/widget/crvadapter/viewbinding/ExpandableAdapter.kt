@@ -21,7 +21,7 @@ abstract class ViewBindingExpandableAdapter<VB1 : ViewBinding, VB2 : ViewBinding
         TypeBuilder(getViewBindingClassFromIndex<VB1>(0))
             .setIsThisTypeCallback { _, listPosition, _ ->
                 val info = getPositionInfo(listPosition)
-                return@setIsThisTypeCallback info.childPosition < 0
+                return@setIsThisTypeCallback info.isParent
             }
             .setOnBindListViewHolderCallback { _, holder, _, item ->
                 convertParent(holder, item, data.indexOf(item))
@@ -93,7 +93,12 @@ abstract class ViewBindingExpandableAdapter<VB1 : ViewBinding, VB2 : ViewBinding
     class ExpandablePositionInfo(
         val parentPosition: Int,
         val childPosition: Int,
-    )
+    ) {
+        /**
+         * true：当前是父item，false：子item
+         */
+        val isParent = childPosition < 0
+    }
 
     override fun setHeaderView(header: View?, index: Int, orientation: Int): Int {
         throw IllegalArgumentException("暂不支持header、footer、empty等功能")
