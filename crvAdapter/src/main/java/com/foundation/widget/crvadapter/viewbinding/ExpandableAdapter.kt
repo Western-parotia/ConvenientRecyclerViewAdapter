@@ -1,5 +1,6 @@
 package com.foundation.widget.crvadapter.viewbinding
 
+import android.view.View
 import androidx.viewbinding.ViewBinding
 import com.foundation.widget.binding.ViewBindingHelper
 
@@ -23,7 +24,7 @@ abstract class ViewBindingExpandableAdapter<VB1 : ViewBinding, VB2 : ViewBinding
                 return@setIsThisTypeCallback info.childPosition < 0
             }
             .setOnBindListViewHolderCallback { _, holder, _, item ->
-                convertParent(holder, item)
+                convertParent(holder, item, data.indexOf(item))
             }
             .build()
         addDefaultMultipleItem(getViewBindingClassFromIndex<VB2>(1)) { _, holder, _, item ->
@@ -49,7 +50,7 @@ abstract class ViewBindingExpandableAdapter<VB1 : ViewBinding, VB2 : ViewBinding
     final override fun getItemCount(): Int {
         var count = data.size
         (0 until data.size).forEach { parentPosition ->
-            count += getChildCount(parentPosition)
+            count += getChildCount(data[parentPosition], parentPosition)
         }
         return count
     }
@@ -61,7 +62,7 @@ abstract class ViewBindingExpandableAdapter<VB1 : ViewBinding, VB2 : ViewBinding
     fun getPositionInfo(listPosition: Int): ExpandablePositionInfo {
         var itemStartPosition = 0
         listRange.forEach { parentPosition ->
-            val childCount = getChildCount(parentPosition)
+            val childCount = getChildCount(data[parentPosition], parentPosition)
             val nextStartPosition = itemStartPosition + childCount + 1
             if (nextStartPosition > listPosition) {
                 return ExpandablePositionInfo(
@@ -75,13 +76,42 @@ abstract class ViewBindingExpandableAdapter<VB1 : ViewBinding, VB2 : ViewBinding
         throw IllegalArgumentException("没有找到对应的child你可能没有notify")
     }
 
-    abstract fun getChildCount(parentPosition: Int): Int
+    abstract fun getChildCount(parentItem: T, parentPosition: Int): Int
 
-    abstract fun convertParent(holder: ViewBindingViewHolder<VB1>, item: T)
-    abstract fun convertChild(holder: ViewBindingViewHolder<VB2>, parentItem: T, childPosition: Int)
+    abstract fun convertParent(
+        holder: ViewBindingViewHolder<VB1>,
+        parentItem: T,
+        parentPosition: Int
+    )
+
+    abstract fun convertChild(
+        holder: ViewBindingViewHolder<VB2>,
+        parentItem: T,
+        childPosition: Int
+    )
 
     class ExpandablePositionInfo(
         val parentPosition: Int,
         val childPosition: Int,
     )
+
+    override fun setHeaderView(header: View?, index: Int, orientation: Int): Int {
+        throw IllegalArgumentException("暂不支持header、footer、empty等功能")
+    }
+
+    override fun addHeaderView(header: View?, index: Int, orientation: Int): Int {
+        throw IllegalArgumentException("暂不支持header、footer、empty等功能")
+    }
+
+    override fun setFooterView(header: View?, index: Int, orientation: Int): Int {
+        throw IllegalArgumentException("暂不支持header、footer、empty等功能")
+    }
+
+    override fun addFooterView(footer: View?, index: Int, orientation: Int): Int {
+        throw IllegalArgumentException("暂不支持header、footer、empty等功能")
+    }
+
+    override fun setEmptyView(emptyView: View?) {
+        throw IllegalArgumentException("暂不支持header、footer、empty等功能")
+    }
 }
