@@ -1,6 +1,7 @@
 package com.foundation.widget.crvadapter.viewbinding
 
 import android.view.View
+import androidx.annotation.IntRange
 import androidx.viewbinding.ViewBinding
 import com.foundation.widget.binding.ViewBindingHelper
 
@@ -76,6 +77,27 @@ abstract class ViewBindingExpandableAdapter<VB1 : ViewBinding, VB2 : ViewBinding
         throw IllegalArgumentException("没有找到对应的child你可能没有notify")
     }
 
+    /**
+     * 仅parent的
+     */
+    fun getAbsPosition(parentPosition: Int) = getAbsPosition(parentPosition, -1)
+
+    /**
+     * 根据相对position获取绝对position
+     * @return adapter的position，可用于notify等操作
+     */
+    fun getAbsPosition(parentPosition: Int, childPosition: Int): Int {
+        var position = 0
+        (0..parentPosition).forEach { parentIndex ->
+            position++
+            position += if (parentIndex == parentPosition)
+                childPosition
+            else
+                getChildCount(data[parentIndex], parentIndex)
+        }
+        return position
+    }
+
     abstract fun getChildCount(parentItem: T, parentPosition: Int): Int
 
     abstract fun convertParent(
@@ -92,6 +114,7 @@ abstract class ViewBindingExpandableAdapter<VB1 : ViewBinding, VB2 : ViewBinding
 
     class ExpandablePositionInfo(
         val parentPosition: Int,
+        @IntRange(from = -1)
         val childPosition: Int,
     ) {
         /**
