@@ -49,7 +49,9 @@ android {
         targetCompatibility = AndroidConfig.Language.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = AndroidConfig.Language.jvmTarget
+        jvmTarget = "1.8"
+        freeCompilerArgs =
+            freeCompilerArgs + arrayOf("-module-name", Publish.Maven.getFourPackage(projectDir))
     }
 }
 
@@ -78,26 +80,25 @@ val sourceCodeTask: Jar = tasks.register("sourceCode", Jar::class.java) {
 
 tasks.register("createGitTagAndPush", Exec::class.java) {
     commandLine("git", "push", "origin", versionTimestamp)
-}.get().dependsOn(tasks.register("createGitTag", Exec::class.java) {
-    commandLine("git", "tag", versionTimestamp, "-m", "autoCreateWithMavenPublish")
-})
-publishing {
-    val versionName = Publish.Version.versionName
-    val groupId = Publish.Maven.groupId
-    val artifactId = Publish.Maven.artifactId
+}
+    .get()
+    .dependsOn(tasks.register("createGitTag", Exec::class.java) {
+        commandLine("git", "tag", versionTimestamp, "-m", "autoCreateWithMavenPublish")
+    })
 
+publishing {
     publications {
-        create<MavenPublication>("crvAdapter") {
-            setGroupId(groupId)
-            setArtifactId(artifactId)
-            version = versionName
+        create<MavenPublication>("tools") {
+//            groupId = Publish.Maven.getThreePackage(projectDir)
+            artifactId = Publish.Version.artifactId
+            version = Publish.Version.versionName
             artifact(sourceCodeTask)
             afterEvaluate {//在脚本读取完成后绑定
                 val bundleReleaseAarTask: Task = tasks.getByName("bundleReleaseAar")
                 bundleReleaseAarTask.finalizedBy("createGitTagAndPush")
                 artifact(bundleReleaseAarTask)
             }
-//            artifact("$buildDir/outputs/aar/loading-release.aar")//直接指定文件
+//            artifact("$buildDir/outputs/aar/loading-release.aar")//直接制定文件
             pom.withXml {
                 val dependenciesNode = asNode().appendNode("dependencies")
                 configurations.implementation.get().allDependencies.forEach {
@@ -112,14 +113,11 @@ publishing {
 
         }
         repositories {
-            maven {
-                setUrl(Publish.Maven.codingArtifactsRepoUrl)
-                credentials {
-                    username = Publish.Maven.codingArtifactsGradleUsername
-                    password = Publish.Maven.codingArtifactsGradlePassword
-                }
+            if (Publish.SNAPSHOT) {
+                Publish.Maven.aliyunSnapshotRepositories(this)
+            } else {
+                Publish.Maven.aliyunReleaseRepositories(this)
             }
         }
     }
-
 }
