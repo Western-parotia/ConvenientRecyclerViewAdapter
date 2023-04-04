@@ -12,7 +12,7 @@ import java.util.*
  */
 object Publish {
     private const val VERSION = "1.1.0"
-    const val SNAPSHOT = true
+    const val SNAPSHOT = false
     private const val ARTIFACT_ID = "convenient-recyclerview-adapter"
 
     object Version {
