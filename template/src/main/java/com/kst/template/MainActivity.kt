@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     private fun setWeathers2() {
         val adapter = ViewBindingMultiItemAdapter<WeatherBean>()
         adapter.addDefaultMultipleItem<ItemWeatherCloudyBinding> { _, _, vb, _ ->
-            vb.tvName.text = "随便写的兜底"
+            vb.tvName.text = "兜底"
         }
         adapter.addMultipleItem(object :
             ViewBindingMultiItemAdapter.OnMultipleListListener<ItemWeatherSunnyBinding, WeatherBean>() {
